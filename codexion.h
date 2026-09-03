@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/18 15:07:06 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/03 17:50:05 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/03 17:55:19 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <pthread.h>
 # include <stdio.h>
+#include <sys/time.h>
 
 typedef struct s_dongle
 {
