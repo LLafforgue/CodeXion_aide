@@ -6,11 +6,11 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/02 15:06:14 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/03 17:48:50 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/03 18:54:34 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#include <unistd.h>
 #include "codexion.h"
 
 // voit	ft_codexion(t_data **datas)
@@ -20,18 +20,23 @@
 // 	thds = malloc((*datas)->coder_nbr * sizeof(pthread_t));
 // }
 
-void	*print_valid(void *arg)
+void	*print_valid(void *arg_coder)
 {
-	int	id;
+	t_coder	*coder;
+	int		id;
+	long	t;
 
-	id = *(int *)arg;
-	printf("thread du coder \033[32m%d\033[0m cree\n", id);
+	coder = (t_coder *)arg_coder;
+	id = coder->id;
+	usleep(1000000);
+	t = now_ms() - coder->datas->start_time;
+	printf("thread du coder \033[3%dm%d\033[0m cree ", (id % 5) + 1, id);
+	printf("at \033[32m%ld ms\033[0m cree\n", t);
 	return (NULL);
 }
 
 void	ft_thread_init(t_data **datas)
 {
-	pthread_t	thds[100];
 	int			i;
 	t_coder		*curent_c;
 
@@ -39,11 +44,16 @@ void	ft_thread_init(t_data **datas)
 	curent_c = *((*datas)->coders);
 	while (i != (*datas)->coder_nbr)
 	{
-		pthread_create(&thds[i], NULL, print_valid, &(curent_c->id));
+		pthread_create(&curent_c->thread_id, NULL, print_valid, curent_c);
 		i++;
 		curent_c = curent_c->next;
 	}
 	i = 0;
+	printf("[current coder: %d]\n", curent_c->id);
 	while (i != (*datas)->coder_nbr)
-		pthread_join(thds[i++], NULL);
+	{
+		i++;
+		pthread_join(curent_c->thread_id, NULL);
+		curent_c = curent_c->next;
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/18 15:07:06 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/03 17:55:19 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/03 18:24:04 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include <pthread.h>
 # include <stdio.h>
-#include <sys/time.h>
+# include <sys/time.h>
 
 typedef struct s_dongle
 {
@@ -31,11 +31,12 @@ typedef struct s_coder
 	int					t_burnout;
 	int					stage;
 	int					nbr_compile;
-	// pthread_t			thread_id;
+	pthread_t			thread_id;
 	struct s_dongle		*dongles_prev;
 	struct s_dongle		*dongles_next;
 	struct s_coder		*prev;
 	struct s_coder		*next;
+	struct s_data		*datas;
 }	t_coder;
 
 typedef struct s_data
@@ -48,13 +49,14 @@ typedef struct s_data
 	int			nbr_compile;
 	int			dongle_cool;
 	int			scheduler;
-	long		current_time;
+	long		start_time;
 	t_coder		**coders;
 }	t_data;
 
 // utils.c
 void		print_coders(t_coder *head);
 void		free_all(t_data *data);
+long		now_ms(void);
 
 // init.c
 int			init_data(char **argv, t_data **data);

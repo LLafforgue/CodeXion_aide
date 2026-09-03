@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/02 15:03:36 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/02 15:33:19 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/03 18:24:34 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	init_data(char **argv, t_data **data)
 	else
 		(*data)->scheduler = 2;
 	(*data)->coders = NULL;
-	(*data)->current_time = 0;
+	(*data)->start_time = now_ms();
 	return (1);
 }
 
@@ -53,6 +53,7 @@ t_coder	*create_coder(t_data *data, int nbr)
 	coder->t_burnout = data->t_burnout;
 	coder->next = NULL;
 	coder->prev = NULL;
+	coder->datas = data;
 	return (coder);
 }
 

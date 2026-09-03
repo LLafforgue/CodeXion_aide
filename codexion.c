@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/17 15:39:56 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/03 17:50:33 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/03 17:31:52 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,12 +78,12 @@ int	main(int argc, char **argv)
 	if (!init_dongles(data))
 		return (1);
 	print_coders(coders);
+	ft_thread_init(&data);
 	// usleep(1000000);
 	// clock_gettime(CLOCK_MONOTONIC, &end);
 	// microsec = (end.tv_sec - start.tv_sec) * 1000000;
 	// elapsed_micros = microsec + (end.tv_nsec - start.tv_nsec) / 1000;
 	// printf("time ms: %ld\n", elapsed_micros / 1000);
-	ft_thread_init(&data);
 	free_all(data);
 	return (0);
 }

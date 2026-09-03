@@ -3,12 +3,12 @@ NAME    = codexion
 CC      = gcc
 CFLAGS  = -Wall -Wextra -Werror -pthread
 
-SRCS    = codexion.c utils.c init.c
+SRCS    = codexion.c utils.c init.c threads.c
 OBJS    = $(SRCS:.c=.o)
 HEADER  = codexion.h
 
-VALID_FIFO = 5 200 100 100 100 3 50 fifo
-VALID_EDF  = 5 200 100 100 100 3 50 edf
+VALID_FIFO = 6 200 100 100 100 3 50 fifo
+VALID_EDF  = 6 200 100 100 100 3 50 edf
 
 all: $(NAME)
 
@@ -27,7 +27,7 @@ fclean: clean
 re: fclean all
 
 test: all
-	@echo "\n=== 1. Cas valide fifo (doit passer) ==="
+	@echo "=== 1. Cas valide fifo (doit passer) ==="
 	@./$(NAME) $(VALID_FIFO)
 
 valgrind: all
