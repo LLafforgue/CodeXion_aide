@@ -6,13 +6,12 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:16:59 by llafforg          #+#    #+#             */
-/*   Updated: 2026/08/20 14:56:07 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/03 16:52:36 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
 #include "codexion.h"
+#include <stdlib.h>
 
 void	print_coders(t_coder *head)
 {
