@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/18 15:07:06 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/03 17:49:01 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/03 17:50:05 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ t_dongle	*create_dongle(int nbr);
 void		init_coders(t_data	*data, t_coder **coders);
 int			init_dongles(t_data *data);
 
-// simulations
-p
+// threads
+void		ft_thread_init(t_data **datas);
+
 #endif

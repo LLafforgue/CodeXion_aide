@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/17 15:39:56 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/03 16:52:21 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/03 17:50:33 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ int	main(int argc, char **argv)
 	// microsec = (end.tv_sec - start.tv_sec) * 1000000;
 	// elapsed_micros = microsec + (end.tv_nsec - start.tv_nsec) / 1000;
 	// printf("time ms: %ld\n", elapsed_micros / 1000);
+	ft_thread_init(&data);
 	free_all(data);
 	return (0);
 }
