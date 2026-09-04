@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:16:59 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/03 18:18:02 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/03 19:17:11 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ void	free_all(t_data *data)
 	while (n > 0)
 	{
 		next = current->next;
+		pthread_mutex_destroy(&current->dongles_prev->lock);
 		free(current->dongles_prev);
 		free(current);
 		current = next;

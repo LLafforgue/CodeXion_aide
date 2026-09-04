@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/18 15:07:06 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/03 18:24:04 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/03 19:14:47 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ typedef struct s_dongle
 	int					is_available;
 	struct s_coder		*coder_l;
 	struct s_coder		*coder_r;
+	pthread_mutex_t		lock;
 }	t_dongle;
 
 typedef struct s_coder

@@ -1,4 +1,4 @@
-// #include "codexion.h"
-// #include <stdio.h>
+#include "codexion.h"
+#include <stdio.h>
 
-// void	simulation()
+void	simulation()
