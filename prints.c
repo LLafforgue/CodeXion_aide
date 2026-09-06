@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/06 11:59:04 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/06 15:39:22 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/06 15:52:35 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	print_dgl(t_coder *c, char n_p)
 	else
 		id_d = c->dongles_next->id;
 	time = now_ms() - c->datas->start_time;
-	printf("[%ld ms] -\t\033[3%dm%d%s take dongle (id %d).\n",
+	printf("[%ld ms] -\t\033[3%dm%d%s has taken a dongle (id %d).\n",
 		time, clr, c->id, RESET, id_d);
 }
 
