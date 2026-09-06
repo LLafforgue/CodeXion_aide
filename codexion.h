@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/18 15:07:06 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/06 15:42:51 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/06 16:55:05 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ typedef struct s_data
 void		print_coders(t_coder *head);
 void		free_all(t_data *data);
 long		now_ms(void);
-void		toggle_end(t_data *datas);
+void		toggle_end(t_coder *c, char cause);
 
 // init.c
 int			init_data(char **argv, t_data **data);
@@ -80,6 +80,9 @@ void		thread_init(t_data **datas);
 // prints
 void		print_dgl(t_coder *c, char n_p);
 void		print_log(t_coder *c, char *msg);
-// void		print_debug(t_coder *c);
+
+// stages
+int			compilation(t_coder *c);
+int			debugging(t_coder *c);
 
 #endif

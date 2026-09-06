@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:16:59 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/06 15:27:20 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/06 17:04:11 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,17 @@ long	now_ms(void)
 	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
-void	toggle_end(t_data *datas)
+void	toggle_end(t_coder *c, char cause)
 {
-	pthread_mutex_lock(&datas->lock);
-	datas->end++;
-	pthread_mutex_unlock(&datas->lock);
+	t_data	*d;
+
+	d = c->datas;
+	if (cause == 'b')
+		print_log(c, "in\033[1;2m burnout\033[0m");
+	if (cause == 'c')
+		print_log(c, "in\033[1;3m the winner\033[0m");
+	pthread_mutex_lock(&d->lock);
+	d->end = 1;
+	pthread_cond_broadcast(&c->in_compil);
+	pthread_mutex_unlock(&d->lock);
 }
