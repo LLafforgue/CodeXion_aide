@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:16:59 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/06 17:04:11 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/06 20:25:33 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ void	free_all(t_data *data)
 	{
 		next = current->next;
 		pthread_mutex_destroy(&current->dongles_prev->lock);
+		pthread_cond_destroy(&current->dongles_prev->available);
 		free(current->dongles_prev);
 		pthread_cond_destroy(&current->in_compil);
 		pthread_mutex_destroy(&current->lock);
@@ -79,5 +80,25 @@ void	toggle_end(t_coder *c, char cause)
 	pthread_mutex_lock(&d->lock);
 	d->end = 1;
 	pthread_cond_broadcast(&c->in_compil);
+	pthread_cond_broadcast(&c->dongles_next->available);
+	pthread_cond_broadcast(&c->dongles_prev->available);
+	pthread_mutex_unlock(&d->lock);
+}
+
+void	let_dongles(t_coder *c)
+{
+	t_dongle	*d;
+
+	d = c->dongles_prev;
+	pthread_mutex_lock(&d->lock);
+	d->is_available = 1;
+	d->t_cooldown = now_ms();
+	pthread_cond_signal(&d->available);
+	pthread_mutex_unlock(&d->lock);
+	d = c->dongles_next;
+	pthread_mutex_lock(&d->lock);
+	d->t_cooldown = now_ms();
+	d->is_available = 1;
+	pthread_cond_signal(&d->available);
 	pthread_mutex_unlock(&d->lock);
 }

@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/18 15:07:06 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/06 18:26:30 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/06 20:22:59 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,12 @@ typedef struct s_dongle
 {
 	int					id;
 	int					is_available;
+	long				t_cooldown;
 	struct s_coder		*coder_l;
 	struct s_coder		*coder_r;
+	struct s_coder		*prev_user;
 	pthread_mutex_t		lock;
+	pthread_cond_t		available;
 }	t_dongle;
 
 typedef struct s_coder
@@ -67,6 +70,7 @@ void		print_coders(t_coder *head);
 void		free_all(t_data *data);
 long		now_ms(void);
 void		toggle_end(t_coder *c, char cause);
+void		let_dongles(t_coder *c);
 
 // init
 int			init_data(char **argv, t_data **data);
@@ -84,6 +88,7 @@ void		print_log(t_coder *c, char *msg);
 
 // stages
 int			compilation(t_coder *c);
+void		take_dongles(t_coder *c);
 int			debugging(t_coder *c);
 
 #endif

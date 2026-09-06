@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/02 15:03:36 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/06 18:24:23 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/06 20:11:51 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,10 @@ t_dongle	*create_dongle(int nbr)
 	dongle->is_available = 1;
 	dongle->coder_r = NULL;
 	dongle->coder_l = NULL;
+	dongle->prev_user = NULL;
+	dongle->t_cooldown = now_ms();
 	pthread_mutex_init(&dongle->lock, NULL);
+	pthread_cond_init(&dongle->available, NULL);
 	return (dongle);
 }
 

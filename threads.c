@@ -6,15 +6,16 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/02 15:06:14 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/06 18:32:18 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/06 20:22:59 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
+#include "unistd.h"
 
 void	ft_stages(t_coder *c)
 {
-	print_dgl(c, 'n');
+	take_dongles(c);
 	compilation(c);
 	debugging(c);
 }
@@ -27,7 +28,7 @@ void	*ft_watcher(void *arg)
 
 	datas = (t_data *)arg;
 	curent = *datas->coders;
-	while (!datas->end)
+	while (1)
 	{
 		pthread_mutex_lock(&curent->lock);
 		time_past = now_ms() - curent->t_burnout;
@@ -35,9 +36,15 @@ void	*ft_watcher(void *arg)
 		if (time_past >= datas->t_burnout)
 			toggle_end(curent, 'b');
 		curent = curent->next;
+		usleep(1000);
+		pthread_mutex_lock(&datas->lock);
+		if (datas->end)
+		{
+			pthread_mutex_unlock(&datas->lock);
+			return (NULL);
+		}
+		pthread_mutex_unlock(&datas->lock);
 	}
-	pthread_mutex_unlock(&datas->lock);
-	return (NULL);
 }
 
 void	*main_thread(void *arg_coder)
