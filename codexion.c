@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/17 15:39:56 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/03 17:31:52 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/06 15:42:51 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,8 @@ int	main(int argc, char **argv)
 	data->coders = &coders;
 	if (!init_dongles(data))
 		return (1);
-	print_coders(coders);
-	ft_thread_init(&data);
+	// print_coders(coders);
+	thread_init(&data);
 	// usleep(1000000);
 	// clock_gettime(CLOCK_MONOTONIC, &end);
 	// microsec = (end.tv_sec - start.tv_sec) * 1000000;

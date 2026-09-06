@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:16:59 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/03 19:17:11 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/06 15:27:20 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,13 @@ void	free_all(t_data *data)
 		next = current->next;
 		pthread_mutex_destroy(&current->dongles_prev->lock);
 		free(current->dongles_prev);
+		pthread_cond_destroy(&current->in_compil);
+		pthread_mutex_destroy(&current->lock);
 		free(current);
 		current = next;
 		n--;
 	}
+	pthread_mutex_destroy(&data->lock);
 	free(data);
 }
 
@@ -62,4 +65,11 @@ long	now_ms(void)
 
 	gettimeofday(&tv, NULL);
 	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
+}
+
+void	toggle_end(t_data *datas)
+{
+	pthread_mutex_lock(&datas->lock);
+	datas->end++;
+	pthread_mutex_unlock(&datas->lock);
 }

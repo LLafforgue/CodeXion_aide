@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/02 15:03:36 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/03 19:15:36 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/06 15:20:00 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 int	init_data(char **argv, t_data **data)
 {
-
 	(*data) = malloc(sizeof(t_data));
 	if (!(*data))
 		return (0);
@@ -29,12 +27,14 @@ int	init_data(char **argv, t_data **data)
 	(*data)->t_refactor = atoi(argv[5]);
 	(*data)->nbr_compile = atoi(argv[6]);
 	(*data)->dongle_cool = atoi(argv[7]);
+	(*data)->start_time = now_ms();
+	(*data)->coders = NULL;
+	(*data)->end = 0;
 	if (strcmp("fifo", argv[8]))
 		(*data)->scheduler = 1;
 	else
-		(*data)->scheduler = 2;
-	(*data)->coders = NULL;
-	(*data)->start_time = now_ms();
+		(*data)->scheduler = 0;
+	pthread_mutex_init(&(*data)->lock, NULL);
 	return (1);
 }
 
@@ -54,6 +54,9 @@ t_coder	*create_coder(t_data *data, int nbr)
 	coder->next = NULL;
 	coder->prev = NULL;
 	coder->datas = data;
+	pthread_mutex_init(&coder->lock, NULL);
+	pthread_cond_init(&coder->in_compil, NULL);
+	coder->is_compil = 0;
 	return (coder);
 }
 
@@ -69,7 +72,6 @@ t_dongle	*create_dongle(int nbr)
 	dongle->coder_r = NULL;
 	dongle->coder_l = NULL;
 	pthread_mutex_init(&dongle->lock, NULL);
-
 	return (dongle);
 }
 
@@ -119,7 +121,6 @@ int	init_dongles(t_data *data)
 		}
 		new_dongle->coder_l = current_c;
 		current_c->dongles_next = new_dongle;
-
 		new_dongle->coder_r = current_c->next;
 		current_c->next->dongles_prev = new_dongle;
 		nbr++;

@@ -6,88 +6,72 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/02 15:06:14 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/03 19:38:07 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/06 15:45:26 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include "codexion.h"
 
-// voit	ft_codexion(t_data **datas)
-// {
-// 	pthread_t	*thds;
-
-// 	thds = malloc((*datas)->coder_nbr * sizeof(pthread_t));
-// }
-
-int	try_take(t_dongle *d)
+void	ft_stages(t_coder *c)
 {
-	int	got;
-
-	pthread_mutex_lock(&d->lock);
-	if (d->is_available)
-	{
-		d->is_available = 0;
-		got = 1;
-		// usleep(500000);
-	}
-	else
-		got = 0;
-	pthread_mutex_unlock(&d->lock);
-	return (got);
+	pthread_mutex_lock(&c->lock);
+	print_dgl(c, 'n');
+	print_log(c, "compiling");
+	c->is_compil = 1;
+	c->nbr_compile++;
+	pthread_cond_signal(&c->in_compil);
+	pthread_mutex_unlock(&c->lock);
+	usleep(c->datas->t_compile * 1000);
+	pthread_mutex_lock(&c->lock);
+	c->is_compil = 0;
+	pthread_cond_signal(&c->in_compil);
+	pthread_mutex_unlock(&c->lock);
+	print_log(c, "debugging");
 }
 
-void	give_back(t_dongle *d)
+void	*main_thread(void *arg_coder)
 {
-	pthread_mutex_lock(&d->lock);
-	d->is_available = 1;
-	usleep(1000000);
-	pthread_mutex_unlock(&d->lock);
-}
-
-void	*print_valid(void *arg_coder)
-{
-	t_coder	*c;
-	int		id;
-	// long	t;
+	t_coder		*c;
+	int			brn;
 
 	c = (t_coder *)arg_coder;
-	id = c->id;
-	if (try_take(c->dongles_prev))
+	while (c->nbr_compile < c->datas->nbr_compile && !c->datas->end)
 	{
-		if (try_take(c->dongles_next))
-			printf("coder %d a pris les dongles %d et %d\n",
-				id, c->dongles_prev->id, c->dongles_next->id);
-		else
+		pthread_mutex_lock(&c->prev->lock);
+		while (c->prev->is_compil)
 		{
-			give_back(c->dongles_prev);
-			printf("\033[31mcoder %d : dongle %d indisponible\033[0m\n",
-				id, c->dongles_next->id);
+			brn = now_ms();
+			pthread_cond_wait(&c->prev->in_compil, &c->prev->lock);
+			brn = now_ms() - brn;
+			if (brn >= c->datas->t_burnout)
+			{
+				print_log(c, "in\033[1;2m burnout\033[0m");
+				pthread_mutex_unlock(&c->prev->lock);
+				return (NULL);
+			}
 		}
+		pthread_mutex_unlock(&c->prev->lock);
+		ft_stages(c);
 	}
-	else
-		printf("\033[31mcoder %d : dongle %d indisponible\033[0m\n",
-			id, c->dongles_prev->id);
-	// t = now_ms() - c->datas->start_time;
-	// printf("at \033[32m%ld ms\033[0m cree\n", t);
 	return (NULL);
 }
 
-void	ft_thread_init(t_data **datas)
+void	thread_init(t_data **datas)
 {
 	int			i;
 	t_coder		*curent_c;
 
 	i = 0;
 	curent_c = *((*datas)->coders);
-	while (i != (*datas)->coder_nbr)
+	while (i != (*datas)->coder_nbr && !(*datas)->end)
 	{
-		pthread_create(&curent_c->thread_id, NULL, print_valid, curent_c);
+		pthread_create(&curent_c->thread_id, NULL, main_thread, curent_c);
 		i++;
 		curent_c = curent_c->next;
 	}
 	i = 0;
-
+	curent_c = *((*datas)->coders);
 	while (i != (*datas)->coder_nbr)
 	{
 		i++;
