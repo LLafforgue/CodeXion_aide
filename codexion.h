@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/18 15:07:06 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/06 16:55:05 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/06 18:26:30 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ typedef struct s_dongle
 typedef struct s_coder
 {
 	int					id;
-	int					t_burnout;
+	long				t_burnout;
 	int					stage;
 	int					nbr_compile;
 	pthread_t			thread_id;
@@ -57,17 +57,18 @@ typedef struct s_data
 	int					scheduler;
 	long				start_time;
 	int					end;
+	pthread_t			burnout_watcher;
 	pthread_mutex_t		lock;
 	t_coder				**coders;
 }	t_data;
 
-// utils.c
+// utils
 void		print_coders(t_coder *head);
 void		free_all(t_data *data);
 long		now_ms(void);
 void		toggle_end(t_coder *c, char cause);
 
-// init.c
+// init
 int			init_data(char **argv, t_data **data);
 t_coder		*create_coder(t_data *data, int nbr);
 t_dongle	*create_dongle(int nbr);
