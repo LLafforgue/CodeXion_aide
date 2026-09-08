@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/06 16:40:30 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/07 18:59:16 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/08 16:56:00 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,27 +40,19 @@ int	debugging(t_coder *c)
 	return (1);
 }
 
-void	ft_strategie(t_coder *c, t_dongle *d)
-{
-	if (c->id % 2 && !c->nbr_compile)
-		usleep(1000);
-	pthread_mutex_lock(&d->lock);
-	while (d->user)
-		pthread_cond_wait(&d->available, &d->lock);
-	d->user = c;
-	pthread_mutex_unlock(&d->lock);
-}
-
 void	ft_take_one(t_coder *c, t_dongle *d)
 {
 	struct timespec	ts;
 	long			target;
 
-	ft_strategie(c, d);
+	if (c->datas->scheduler)
+		strategie_fifo(c, d);
+	else
+		strategie_fifo(c, d);
 	pthread_mutex_lock(&d->lock);
 	while (!c->datas->end)
 	{
-		if (d->is_available && now_ms() >= d->t_cooldown && c == d->user)
+		if (d->is_available && now_ms() >= d->t_cooldown && c == d->user[0])
 			break ;
 		if (!d->is_available)
 			pthread_cond_wait(&d->available, &d->lock);
@@ -101,3 +93,5 @@ void	refactoring(t_coder *c)
 	print_log(c, "refactoring");
 	usleep(c->datas->t_refactor * 1000);
 }
+
+

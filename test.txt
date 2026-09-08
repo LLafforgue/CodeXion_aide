@@ -1,0 +1,39 @@
+[1 ms] -	2 has taken a dongle (id 2).
+[1 ms] -	2 has taken a dongle (id 3).
+[1 ms] -	2 is compiling.
+[1 ms] -	6 has taken a dongle (id 6).
+[1 ms] -	6 has taken a dongle (id 7).
+[1 ms] -	6 is compiling.
+[1 ms] -	4 has taken a dongle (id 4).
+[1 ms] -	4 has taken a dongle (id 5).
+[1 ms] -	4 is compiling.
+[2 ms] -	7 has taken a dongle (id 1).
+[26 ms] -	2 is debugging.
+[26 ms] -	6 is debugging.
+[26 ms] -	4 is debugging.
+[36 ms] -	2 is refactoring.
+[36 ms] -	6 is refactoring.
+[36 ms] -	4 is refactoring.
+[46 ms] -	3 has taken a dongle (id 3).
+[46 ms] -	7 has taken a dongle (id 7).
+[46 ms] -	7 is compiling.
+[46 ms] -	5 has taken a dongle (id 5).
+[47 ms] -	3 has taken a dongle (id 4).
+[47 ms] -	3 is compiling.
+[47 ms] -	5 has taken a dongle (id 6).
+[47 ms] -	5 is compiling.
+[71 ms] -	7 is debugging.
+[72 ms] -	3 is debugging.
+[72 ms] -	5 is debugging.
+[81 ms] -	7 is refactoring.
+[82 ms] -	3 is refactoring.
+[82 ms] -	5 is refactoring.
+[91 ms] -	1 has taken a dongle (id 1).
+[92 ms] -	1 has taken a dongle (id 2).
+[92 ms] -	1 is compiling.
+[92 ms] -	4 has taken a dongle (id 4).
+[92 ms] -	4 has taken a dongle (id 5).
+[92 ms] -	4 is compiling.
+[92 ms] -	6 has taken a dongle (id 6).
+[92 ms] -	6 has taken a dongle (id 7).
+[92 ms] -	6 is compiling.

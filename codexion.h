@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/18 15:07:06 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/08 15:22:02 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/08 16:57:05 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ typedef struct s_dongle
 	long				t_cooldown;
 	struct s_coder		*coder_l;
 	struct s_coder		*coder_r;
-	struct s_coder		*user;
+	struct s_coder		*user[2];
 	pthread_mutex_t		lock;
 	pthread_cond_t		available;
 }	t_dongle;
@@ -38,6 +38,7 @@ typedef struct s_coder
 	long				t_burnout;
 	int					stage;
 	int					nbr_compile;
+	int					max_reach;
 	pthread_t			thread_id;
 	struct s_dongle		*dongles_prev;
 	struct s_dongle		*dongles_next;
@@ -66,7 +67,6 @@ typedef struct s_data
 }	t_data;
 
 // utils
-void		print_coders(t_coder *head);
 long		now_ms(void);
 void		toggle_end(t_coder *c, char cause);
 void		let_dongles(t_coder *c);
@@ -94,5 +94,10 @@ int			compilation(t_coder *c);
 void		take_dongles(t_coder *c);
 int			debugging(t_coder *c);
 void		refactoring(t_coder *c);
+
+// strategies
+void		strategie_fifo(t_coder *c, t_dongle *d);
+t_coder		*other_coder(t_coder *c, t_dongle *d);
+
 
 #endif

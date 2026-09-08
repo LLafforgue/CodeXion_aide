@@ -6,12 +6,12 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/02 15:06:14 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/08 15:28:29 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/08 16:38:22 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
-#include "unistd.h"
+#include <unistd.h>
 
 void	ft_stages(t_coder *c)
 {
@@ -34,8 +34,11 @@ void	*ft_watcher(void *arg)
 	while (1)
 	{
 		pthread_mutex_lock(&curent->lock);
-		if (curent->nbr_compile == datas->nbr_compile)
+		if (curent->nbr_compile >= datas->nbr_compile && !curent->max_reach)
+		{
 			compil_ends++;
+			curent->max_reach = 1;
+		}
 		if (now_ms() - curent->t_burnout >= datas->t_burnout)
 			toggle_end(curent, 'b');
 		pthread_mutex_unlock(&curent->lock);
