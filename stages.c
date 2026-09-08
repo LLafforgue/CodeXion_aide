@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/06 16:40:30 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/08 19:12:44 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/08 20:50:13 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,11 @@
 
 int	compilation(t_coder *c)
 {
-	if (c->datas->end)
+	if (c->datas->end || !c->dongles_took)
+	{
+		let_dongles(c);
 		return (0);
+	}
 	pthread_mutex_lock(&c->lock);
 	c->is_compil = 1;
 	c->t_burnout = now_ms();
@@ -45,8 +48,6 @@ void	ft_take_one(t_coder *c, t_dongle *d)
 	struct timespec	ts;
 	long			target;
 
-	if (c->datas->end)
-		return ;
 	strategie(c, d);
 	pthread_mutex_lock(&d->lock);
 	while (!c->datas->end)
@@ -66,7 +67,6 @@ void	ft_take_one(t_coder *c, t_dongle *d)
 	}
 	d->is_available = 0;
 	pthread_mutex_unlock(&d->lock);
-	print_dgl(c, d->id);
 }
 
 void	take_dongles(t_coder *c)
@@ -76,13 +76,23 @@ void	take_dongles(t_coder *c)
 	if (c->dongles_prev->id < c->dongles_next->id)
 	{
 		ft_take_one(c, c->dongles_prev);
+		print_dgl(c, c->dongles_prev->id);
 		ft_take_one(c, c->dongles_next);
+		print_dgl(c, c->dongles_next->id);
 	}
 	else
 	{
 		ft_take_one(c, c->dongles_next);
+		print_dgl(c, c->dongles_prev->id);
+		if (c->datas->coder_nbr < 2)
+			return ;
 		ft_take_one(c, c->dongles_prev);
+		print_dgl(c, c->dongles_next->id);
 	}
+	pthread_mutex_lock(&c->lock);
+	c->dongles_took = 1;
+	pthread_mutex_unlock(&c->lock);
+
 }
 
 void	refactoring(t_coder *c)

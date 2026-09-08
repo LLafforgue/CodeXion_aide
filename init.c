@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/02 15:03:36 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/08 16:11:30 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/08 20:28:08 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ t_coder	*create_coder(t_data *data, int nbr)
 	coder->id = nbr;
 	coder->nbr_compile = 0;
 	coder->max_reach = 0;
+	coder->dongles_took = 0;
 	coder->stage = 0;
 	coder->t_burnout = now_ms();
 	coder->next = NULL;

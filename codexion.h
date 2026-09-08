@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/18 15:07:06 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/08 19:12:22 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/08 20:27:52 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ typedef struct s_coder
 	int					stage;
 	int					nbr_compile;
 	int					max_reach;
+	int					dongles_took;
 	pthread_t			thread_id;
 	struct s_dongle		*dongles_prev;
 	struct s_dongle		*dongles_next;
