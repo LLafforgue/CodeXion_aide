@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/02 15:03:36 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/06 20:11:51 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/08 15:10:36 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	init_data(char **argv, t_data **data)
 	(*data)->t_debug = atoi(argv[4]);
 	(*data)->t_refactor = atoi(argv[5]);
 	(*data)->nbr_compile = atoi(argv[6]);
-	(*data)->dongle_cool = atoi(argv[7]);
+	(*data)->t_dongle_cool = (long)atoi(argv[7]);
 	(*data)->start_time = now_ms();
 	(*data)->coders = NULL;
 	(*data)->end = 0;
@@ -55,12 +55,11 @@ t_coder	*create_coder(t_data *data, int nbr)
 	coder->prev = NULL;
 	coder->datas = data;
 	pthread_mutex_init(&coder->lock, NULL);
-	pthread_cond_init(&coder->in_compil, NULL);
 	coder->is_compil = 0;
 	return (coder);
 }
 
-t_dongle	*create_dongle(int nbr)
+t_dongle	*ft_create_dongle(int nbr)
 {
 	t_dongle	*dongle;
 
@@ -71,39 +70,38 @@ t_dongle	*create_dongle(int nbr)
 	dongle->is_available = 1;
 	dongle->coder_r = NULL;
 	dongle->coder_l = NULL;
-	dongle->prev_user = NULL;
-	dongle->t_cooldown = now_ms();
+	dongle->user = NULL;
+	dongle->t_cooldown = 0;
 	pthread_mutex_init(&dongle->lock, NULL);
 	pthread_cond_init(&dongle->available, NULL);
 	return (dongle);
 }
 
-void	init_coders(t_data	*data, t_coder **coders)
+t_coder	*init_coders(t_data	*data, t_coder *coders)
 {
 	int		nbr;
 	t_coder	*temp;
 	t_coder	*new_coder;
 
 	nbr = 0;
-	while (nbr < data->coder_nbr)
+	while (nbr++ < data->coder_nbr)
 	{
-		if (nbr == 0)
+		if (nbr - 1 == 0)
 		{
-			*coders = create_coder(data, nbr);
-			temp = *coders;
+			coders = create_coder(data, nbr);
+			temp = coders;
 		}
 		else
 		{
 			new_coder = create_coder(data, nbr);
-			new_coder->prev = *coders;
-			(*coders)->next = new_coder;
-			*coders = new_coder;
+			new_coder->prev = coders;
+			coders->next = new_coder;
+			coders = new_coder;
 		}
-		nbr++;
 	}
-	temp->prev = *coders;
-	(*coders)->next = temp;
-	*coders = temp;
+	temp->prev = coders;
+	coders->next = temp;
+	return (free_coders(coders));
 }
 
 int	init_dongles(t_data *data)
@@ -116,7 +114,7 @@ int	init_dongles(t_data *data)
 	current_c = *(data->coders);
 	while (nbr < data->coder_nbr)
 	{
-		new_dongle = create_dongle(nbr);
+		new_dongle = ft_create_dongle(++nbr);
 		if (!new_dongle)
 		{
 			printf("\033[33,1mAllocation error [dongle]\033[0m");
@@ -126,7 +124,6 @@ int	init_dongles(t_data *data)
 		current_c->dongles_next = new_dongle;
 		new_dongle->coder_r = current_c->next;
 		current_c->next->dongles_prev = new_dongle;
-		nbr++;
 		current_c = current_c->next;
 	}
 	return (1);

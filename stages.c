@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/06 16:40:30 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/06 20:30:55 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/07 18:59:16 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,10 @@ int	compilation(t_coder *c)
 	c->is_compil = 1;
 	c->nbr_compile++;
 	c->t_burnout = now_ms();
-	pthread_cond_signal(&c->in_compil);
 	pthread_mutex_unlock(&c->lock);
 	usleep(c->datas->t_compile * 1000);
 	pthread_mutex_lock(&c->lock);
 	c->is_compil = 0;
-	pthread_cond_signal(&c->in_compil);
 	pthread_mutex_unlock(&c->lock);
 	let_dongles(c);
 	return (1);
@@ -42,22 +40,64 @@ int	debugging(t_coder *c)
 	return (1);
 }
 
+void	ft_strategie(t_coder *c, t_dongle *d)
+{
+	if (c->id % 2 && !c->nbr_compile)
+		usleep(1000);
+	pthread_mutex_lock(&d->lock);
+	while (d->user)
+		pthread_cond_wait(&d->available, &d->lock);
+	d->user = c;
+	pthread_mutex_unlock(&d->lock);
+}
+
+void	ft_take_one(t_coder *c, t_dongle *d)
+{
+	struct timespec	ts;
+	long			target;
+
+	ft_strategie(c, d);
+	pthread_mutex_lock(&d->lock);
+	while (!c->datas->end)
+	{
+		if (d->is_available && now_ms() >= d->t_cooldown && c == d->user)
+			break ;
+		if (!d->is_available)
+			pthread_cond_wait(&d->available, &d->lock);
+		else
+		{
+			clock_gettime(CLOCK_REALTIME, &ts);
+			target = d->t_cooldown;
+			ts.tv_sec = target / 1000;
+			ts.tv_nsec = (target % 1000) * 1000000;
+			pthread_cond_timedwait(&d->available, &d->lock, &ts);
+		}
+	}
+	d->is_available = 0;
+	pthread_mutex_unlock(&d->lock);
+	print_dgl(c, d->id);
+}
+
 void	take_dongles(t_coder *c)
 {
 	if (c->datas->end)
 		return ;
-	pthread_mutex_lock(&c->dongles_prev->lock);
-	while (!c->dongles_prev->is_available && !c->datas->end)
-		pthread_cond_wait(&c->dongles_prev->available, &c->dongles_prev->lock);
-	c->dongles_prev->is_available = 0;
-	c->dongles_prev->prev_user = c;
-	pthread_mutex_unlock(&c->dongles_prev->lock);
-	print_dgl(c, 'p');
-	pthread_mutex_lock(&c->dongles_next->lock);
-	while (!c->dongles_next->is_available && !c->datas->end)
-		pthread_cond_wait(&c->dongles_next->available, &c->dongles_next->lock);
-	c->dongles_next->is_available = 0;
-	c->dongles_next->prev_user = c;
-	pthread_mutex_unlock(&c->dongles_next->lock);
-	print_dgl(c, 'n');
+	if (c->dongles_prev->id < c->dongles_next->id)
+	{
+		ft_take_one(c, c->dongles_prev);
+		ft_take_one(c, c->dongles_next);
+	}
+	else
+	{
+		ft_take_one(c, c->dongles_next);
+		ft_take_one(c, c->dongles_prev);
+	}
+}
+
+void	refactoring(t_coder *c)
+{
+	if (c->datas->end)
+		return ;
+	print_log(c, "refactoring");
+	usleep(c->datas->t_refactor * 1000);
 }

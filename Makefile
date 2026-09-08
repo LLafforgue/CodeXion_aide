@@ -3,12 +3,12 @@ NAME    = codexion
 CC      = gcc
 CFLAGS  = -Wall -Wextra -Werror -pthread
 
-SRCS    = codexion.c utils.c init.c threads.c prints.c stages.c
+SRCS    = codexion.c utils.c utils_free.c init.c threads.c prints.c stages.c
 OBJS    = $(SRCS:.c=.o)
 HEADER  = codexion.h
 
-VALID_FIFO = 5 30 20 5 100 3 50 fifo
-VALID_EDF  = 5 100 50 100 100 3 50 edf
+VALID_FIFO = 1 30 10 5 10 3 5 fifo
+VALID_EDF  = 5 100 50 100 100 3 5 edf
 
 all: $(NAME)
 

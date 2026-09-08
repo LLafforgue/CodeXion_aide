@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/18 15:07:06 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/06 20:22:59 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/08 15:22:02 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@
 # include <stdio.h>
 # include <sys/time.h>
 
-# define RESET "\033[0m"
+# define END "\033[0m"
+# define ERR "\033[33;1mError:"
 
 typedef struct s_dongle
 {
@@ -26,7 +27,7 @@ typedef struct s_dongle
 	long				t_cooldown;
 	struct s_coder		*coder_l;
 	struct s_coder		*coder_r;
-	struct s_coder		*prev_user;
+	struct s_coder		*user;
 	pthread_mutex_t		lock;
 	pthread_cond_t		available;
 }	t_dongle;
@@ -44,7 +45,6 @@ typedef struct s_coder
 	struct s_coder		*next;
 	struct s_data		*datas;
 	pthread_mutex_t		lock;
-	pthread_cond_t		in_compil;
 	int					is_compil;
 }	t_coder;
 
@@ -56,8 +56,8 @@ typedef struct s_data
 	int					t_debug;
 	int					t_refactor;
 	int					nbr_compile;
-	int					dongle_cool;
 	int					scheduler;
+	long				t_dongle_cool;
 	long				start_time;
 	int					end;
 	pthread_t			burnout_watcher;
@@ -67,28 +67,32 @@ typedef struct s_data
 
 // utils
 void		print_coders(t_coder *head);
-void		free_all(t_data *data);
 long		now_ms(void);
 void		toggle_end(t_coder *c, char cause);
 void		let_dongles(t_coder *c);
 
+// utils_free
+void		free_all(t_data *data);
+t_coder		*free_coders(t_coder *coder);
+
+
 // init
 int			init_data(char **argv, t_data **data);
 t_coder		*create_coder(t_data *data, int nbr);
-t_dongle	*create_dongle(int nbr);
-void		init_coders(t_data	*data, t_coder **coders);
+t_coder		*init_coders(t_data	*data, t_coder *coders);
 int			init_dongles(t_data *data);
 
 // threads
 void		thread_init(t_data **datas);
 
 // prints
-void		print_dgl(t_coder *c, char n_p);
+void		print_dgl(t_coder *c, int id_d);
 void		print_log(t_coder *c, char *msg);
 
 // stages
 int			compilation(t_coder *c);
 void		take_dongles(t_coder *c);
 int			debugging(t_coder *c);
+void		refactoring(t_coder *c);
 
 #endif

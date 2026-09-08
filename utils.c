@@ -6,12 +6,11 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:16:59 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/06 20:25:33 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/08 14:52:34 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
-#include <stdlib.h>
 
 void	print_coders(t_coder *head)
 {
@@ -34,32 +33,6 @@ void	print_coders(t_coder *head)
 	printf("\n");
 }
 
-void	free_all(t_data *data)
-{
-	t_coder	*current;
-	t_coder	*next;
-	int		n;
-
-	if (!data)
-		return ;
-	current = *(data->coders);
-	n = data->coder_nbr;
-	while (n > 0)
-	{
-		next = current->next;
-		pthread_mutex_destroy(&current->dongles_prev->lock);
-		pthread_cond_destroy(&current->dongles_prev->available);
-		free(current->dongles_prev);
-		pthread_cond_destroy(&current->in_compil);
-		pthread_mutex_destroy(&current->lock);
-		free(current);
-		current = next;
-		n--;
-	}
-	pthread_mutex_destroy(&data->lock);
-	free(data);
-}
-
 long	now_ms(void)
 {
 	struct timeval	tv;
@@ -76,10 +49,9 @@ void	toggle_end(t_coder *c, char cause)
 	if (cause == 'b')
 		print_log(c, "in\033[1;2m burnout\033[0m");
 	if (cause == 'c')
-		print_log(c, "in\033[1;3m the winner\033[0m");
+		printf("\033[1;3m Coders win !!!\033[0m\n");
 	pthread_mutex_lock(&d->lock);
 	d->end = 1;
-	pthread_cond_broadcast(&c->in_compil);
 	pthread_cond_broadcast(&c->dongles_next->available);
 	pthread_cond_broadcast(&c->dongles_prev->available);
 	pthread_mutex_unlock(&d->lock);
@@ -92,13 +64,15 @@ void	let_dongles(t_coder *c)
 	d = c->dongles_prev;
 	pthread_mutex_lock(&d->lock);
 	d->is_available = 1;
-	d->t_cooldown = now_ms();
+	d->t_cooldown = now_ms() + c->datas->t_dongle_cool;
+	d->user = NULL;
 	pthread_cond_signal(&d->available);
 	pthread_mutex_unlock(&d->lock);
 	d = c->dongles_next;
 	pthread_mutex_lock(&d->lock);
-	d->t_cooldown = now_ms();
+	d->t_cooldown = now_ms() + c->datas->t_dongle_cool;
 	d->is_available = 1;
+	d->user = NULL;
 	pthread_cond_signal(&d->available);
 	pthread_mutex_unlock(&d->lock);
 }
