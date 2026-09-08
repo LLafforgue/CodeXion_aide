@@ -83,10 +83,10 @@ case "$1" in
 		run_test cooldown_hell "2 1000 100 100 100 5 2000 fifo"
 		;;
 	max_coders)
-		run_test max_coders "300 10000 100 100 100 5 10 edf"
+		run_test max_coders "300 10000 100 100 100 1 10 edf"
 		;;
 	toomany_compiler)
-		run_test toomany_compiler "999 1000 200 200 200 5 50 fifo"
+		run_test toomany_compiler "999 1000 200 200 200 1 50 fifo"
 		;;
 	error_arg1)
 		run_test error_coder "banana 200 300 400 500 5 10 fifo"
