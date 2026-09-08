@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/06 16:40:30 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/08 20:50:13 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/08 22:30:23 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,9 @@
 
 int	compilation(t_coder *c)
 {
-	if (c->datas->end || !c->dongles_took)
+	if (c->dongles_took < 2)
+		return (0);
+	if (c->datas->end)
 	{
 		let_dongles(c);
 		return (0);
@@ -48,9 +50,12 @@ void	ft_take_one(t_coder *c, t_dongle *d)
 	struct timespec	ts;
 	long			target;
 
-	strategie(c, d);
+	if (!c->datas->scheduler)
+		strategie_fifo(c, d);
+	else
+		strategie_edf(c, d);
 	pthread_mutex_lock(&d->lock);
-	while (!c->datas->end)
+	while (!c->datas->end && c->datas->coder_nbr > 1)
 	{
 		if (d->is_available && now_ms() >= d->t_cooldown && c == d->user[0])
 			break ;
@@ -73,26 +78,18 @@ void	take_dongles(t_coder *c)
 {
 	if (c->datas->end)
 		return ;
-	if (c->dongles_prev->id < c->dongles_next->id)
-	{
-		ft_take_one(c, c->dongles_prev);
-		print_dgl(c, c->dongles_prev->id);
-		ft_take_one(c, c->dongles_next);
-		print_dgl(c, c->dongles_next->id);
-	}
-	else
-	{
-		ft_take_one(c, c->dongles_next);
-		print_dgl(c, c->dongles_prev->id);
-		if (c->datas->coder_nbr < 2)
-			return ;
-		ft_take_one(c, c->dongles_prev);
-		print_dgl(c, c->dongles_next->id);
-	}
+	ft_take_one(c, c->dongles_next);
 	pthread_mutex_lock(&c->lock);
-	c->dongles_took = 1;
+	c->dongles_took++;
 	pthread_mutex_unlock(&c->lock);
-
+	print_dgl(c, c->dongles_prev->id);
+	if (c->datas->coder_nbr < 2)
+		return ;
+	ft_take_one(c, c->dongles_prev);
+	print_dgl(c, c->dongles_next->id);
+	pthread_mutex_lock(&c->lock);
+	c->dongles_took++;
+	pthread_mutex_unlock(&c->lock);
 }
 
 void	refactoring(t_coder *c)

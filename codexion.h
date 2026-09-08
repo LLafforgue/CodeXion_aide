@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/18 15:07:06 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/08 20:27:52 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/08 21:38:03 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,6 @@ typedef struct s_data
 // utils
 long		now_ms(void);
 void		toggle_end(t_coder *c, char cause);
-void		let_dongles(t_coder *c);
 t_coder		*other_coder(t_coder *c, t_dongle *d);
 
 // utils_free
@@ -97,6 +96,8 @@ int			debugging(t_coder *c);
 void		refactoring(t_coder *c);
 
 // strategies
-void		strategie(t_coder *c, t_dongle *d);
+void		strategie_fifo(t_coder *c, t_dongle *d);
+void		strategie_edf(t_coder *c, t_dongle *d);
+void		let_dongles(t_coder *c);
 
 #endif

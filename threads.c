@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/02 15:06:14 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/08 21:07:47 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/08 22:27:28 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,8 @@ void	*ft_coder_thread(void *arg_coder)
 			return (NULL);
 		}
 		pthread_mutex_unlock(&c->datas->lock);
-		take_dongles(c);
+		if (c->dongles_took < 1)
+			take_dongles(c);
 		if (compilation(c) && c->datas->coder_nbr > 1)
 		{
 			debugging(c);
