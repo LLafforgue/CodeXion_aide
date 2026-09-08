@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/06 16:40:30 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/08 16:56:00 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/08 19:12:44 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,13 @@ int	compilation(t_coder *c)
 	if (c->datas->end)
 		return (0);
 	pthread_mutex_lock(&c->lock);
-	print_log(c, "compiling");
 	c->is_compil = 1;
-	c->nbr_compile++;
 	c->t_burnout = now_ms();
+	print_log(c, "compiling");
 	pthread_mutex_unlock(&c->lock);
 	usleep(c->datas->t_compile * 1000);
 	pthread_mutex_lock(&c->lock);
+	c->nbr_compile++;
 	c->is_compil = 0;
 	pthread_mutex_unlock(&c->lock);
 	let_dongles(c);
@@ -45,10 +45,9 @@ void	ft_take_one(t_coder *c, t_dongle *d)
 	struct timespec	ts;
 	long			target;
 
-	if (c->datas->scheduler)
-		strategie_fifo(c, d);
-	else
-		strategie_fifo(c, d);
+	if (c->datas->end)
+		return ;
+	strategie(c, d);
 	pthread_mutex_lock(&d->lock);
 	while (!c->datas->end)
 	{
@@ -93,5 +92,3 @@ void	refactoring(t_coder *c)
 	print_log(c, "refactoring");
 	usleep(c->datas->t_refactor * 1000);
 }
-
-

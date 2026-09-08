@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:16:59 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/08 16:56:55 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/08 19:12:34 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,3 +36,9 @@ void	toggle_end(t_coder *c, char cause)
 	pthread_mutex_unlock(&d->lock);
 }
 
+t_coder	*other_coder(t_coder *c, t_dongle *d)
+{
+	if (d->coder_l == c)
+		return (d->coder_r);
+	return (d->coder_l);
+}
