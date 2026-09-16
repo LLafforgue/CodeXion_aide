@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/08 14:50:57 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/08 15:13:02 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/15 13:59:19 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	free_all(t_data *data)
 	{
 		next = current->next;
 		pthread_mutex_destroy(&current->dongles_prev->lock);
+		pthread_mutex_destroy(&current->dongles_prev->l_able);
 		pthread_cond_destroy(&current->dongles_prev->available);
 		free(current->dongles_prev);
 		pthread_mutex_destroy(&current->lock);
@@ -55,9 +56,11 @@ t_coder	*free_coders(t_coder *coder)
 	{
 		coder = temp;
 		pthread_mutex_destroy(&coder->dongles_prev->lock);
+		pthread_mutex_destroy(&coder->dongles_prev->l_able);
 		pthread_cond_destroy(&coder->dongles_prev->available);
 		free(coder->dongles_prev);
 		pthread_mutex_destroy(&coder->lock);
+		pthread_mutex_destroy(&coder->l_burnout);
 		temp = temp->next;
 		free(coder);
 	}

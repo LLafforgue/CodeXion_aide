@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/02 15:06:14 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/08 22:27:28 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/15 18:58:40 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,30 @@ static void	ft_check_end(t_coder *c, int *compil_ends)
 		(*compil_ends)++;
 		c->max_reach = 1;
 	}
+	pthread_mutex_unlock(&c->lock);
+	pthread_mutex_lock(&c->lock);
 	if ((now_ms() - c->t_burnout >= datas->t_burnout
 			&& datas->t_burnout))
 		toggle_end(c, 'b');
-	pthread_mutex_unlock(&c->lock);
 	if (*compil_ends >= datas->coder_nbr)
 		toggle_end(c, 'c');
+	pthread_mutex_unlock(&c->lock);
 }
 
-static void	*ft_watcher(void *arg)
+static void	*ft_free_signals(t_coder *coder)
+{
+	t_coder	*end;
+
+	end = coder->next;
+	while (end != coder)
+	{
+		let_dongles(coder);
+		coder = coder->prev;
+	}
+	return (NULL);
+}
+
+static void	*monitor(void *arg)
 {
 	t_data	*datas;
 	t_coder	*curent;
@@ -50,7 +65,7 @@ static void	*ft_watcher(void *arg)
 		if (datas->end)
 		{
 			pthread_mutex_unlock(&datas->lock);
-			return (NULL);
+			return (ft_free_signals(curent));
 		}
 		pthread_mutex_unlock(&datas->lock);
 	}
@@ -60,9 +75,9 @@ void	*ft_coder_thread(void *arg_coder)
 {
 	t_coder		*c;
 
+	c = (t_coder *)arg_coder;
 	while (1)
 	{
-		c = (t_coder *)arg_coder;
 		pthread_mutex_lock(&c->datas->lock);
 		if (c->datas->end)
 		{
@@ -93,7 +108,7 @@ void	thread_init(t_data **datas)
 		i++;
 		curent_c = curent_c->next;
 	}
-	pthread_create(&(*datas)->burnout_watcher, NULL, ft_watcher, (*datas));
+	pthread_create(&(*datas)->burnout_watcher, NULL, monitor, (*datas));
 	i = 0;
 	pthread_join((*datas)->burnout_watcher, NULL);
 	while (i != (*datas)->coder_nbr)
