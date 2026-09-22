@@ -6,11 +6,11 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/08 14:50:57 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/15 13:59:19 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/17 15:24:40 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "codexion.h"
+#include "../codexion.h"
 #include <stdlib.h>
 
 void	free_all(t_data *data)
@@ -26,8 +26,8 @@ void	free_all(t_data *data)
 	while (n > 0)
 	{
 		next = current->next;
+		pthread_mutex_destroy(&current->dongles_prev->keep);
 		pthread_mutex_destroy(&current->dongles_prev->lock);
-		pthread_mutex_destroy(&current->dongles_prev->l_able);
 		pthread_cond_destroy(&current->dongles_prev->available);
 		free(current->dongles_prev);
 		pthread_mutex_destroy(&current->lock);
@@ -56,7 +56,7 @@ t_coder	*free_coders(t_coder *coder)
 	{
 		coder = temp;
 		pthread_mutex_destroy(&coder->dongles_prev->lock);
-		pthread_mutex_destroy(&coder->dongles_prev->l_able);
+		pthread_mutex_destroy(&coder->dongles_prev->keep);
 		pthread_cond_destroy(&coder->dongles_prev->available);
 		free(coder->dongles_prev);
 		pthread_mutex_destroy(&coder->lock);

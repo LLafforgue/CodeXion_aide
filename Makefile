@@ -3,7 +3,7 @@ NAME    = codexion
 CC      = gcc
 CFLAGS  = -Wall -Wextra -Werror -pthread
 
-SRCS    = codexion.c utils.c utils_free.c init.c \
+SRCS    = codexion.c utils/utils.c utils/utils_free.c init.c \
 		  threads.c prints.c stages.c strategies.c waiting.c dongles_man.c
 OBJS    = $(SRCS:.c=.o)
 HEADER  = codexion.h
@@ -12,7 +12,7 @@ ERROR_FIFO = 5 75 20 10 15 4 15 fifo
 VALID_FIFO = 5 900 200 200 100 5 0 fifo
 ERROR_EDF  = 5 90 50 10 80 3 5 edf
 VALID_EDF  = 4 150 50 10 10 3 5 edf
-BIG_TEST_FIFO = 100 10000 66 24 87 10 10 fifo
+BIG_TEST_FIFO = 7 3000 200 200 5 5 500 fifo
 BIG_TEST_EDF = 100 10000 66 24 87 10 10 edf
 ONE_CODER = 1 30 10 5 10 3 5 fifo
 

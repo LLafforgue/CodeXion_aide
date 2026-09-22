@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/18 15:07:06 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/15 18:59:03 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/17 15:23:30 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ typedef struct s_dongle
 	struct s_coder		*coder_r;
 	struct s_coder		*user[2];
 	pthread_mutex_t		lock;
-	pthread_mutex_t		l_able;
+	pthread_mutex_t		keep;
 	pthread_cond_t		available;
 }	t_dongle;
 
@@ -36,7 +36,6 @@ typedef struct s_coder
 {
 	int					id;
 	long				t_burnout;
-	int					stage;
 	int					nbr_compile;
 	int					max_reach;
 	int					dongles_took;

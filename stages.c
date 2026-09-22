@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/06 16:40:30 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/15 18:56:27 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/17 16:16:39 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 
 int	compilation(t_coder *c)
 {
-	if (c->dongles_took < 2)
-		return (0);
 	if (c->datas->end)
 	{
 		let_dongles(c);

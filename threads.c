@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/02 15:06:14 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/15 18:58:40 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/17 16:39:18 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,13 @@ static void	ft_check_end(t_coder *c, int *compil_ends)
 		c->max_reach = 1;
 	}
 	pthread_mutex_unlock(&c->lock);
-	pthread_mutex_lock(&c->lock);
+	pthread_mutex_lock(&c->l_burnout);
 	if ((now_ms() - c->t_burnout >= datas->t_burnout
 			&& datas->t_burnout))
 		toggle_end(c, 'b');
 	if (*compil_ends >= datas->coder_nbr)
 		toggle_end(c, 'c');
-	pthread_mutex_unlock(&c->lock);
+	pthread_mutex_unlock(&c->l_burnout);
 }
 
 static void	*ft_free_signals(t_coder *coder)
@@ -85,8 +85,7 @@ void	*ft_coder_thread(void *arg_coder)
 			return (NULL);
 		}
 		pthread_mutex_unlock(&c->datas->lock);
-		if (c->dongles_took < 1)
-			take_dongles(c);
+		take_dongles(c);
 		if (compilation(c) && c->datas->coder_nbr > 1)
 		{
 			debugging(c);

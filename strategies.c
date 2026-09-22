@@ -6,7 +6,7 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/08 16:18:11 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/15 18:58:55 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/17 15:15:38 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,23 +32,8 @@ t_coder	*edf_first_coder(t_coder *first_c, t_dongle *d)
 
 void	strategie_edf(t_coder *c, t_dongle *d)
 {
-	pthread_mutex_lock(&c->datas->lock);
-	if (c->datas->coder_nbr < 2 || d->user[0] == c || c->datas->end)
-	{
-		pthread_mutex_unlock(&c->datas->lock);
-		return ;
-	}
-	pthread_mutex_unlock(&c->datas->lock);
-	pthread_mutex_lock(&d->l_able);
-	if (!d->user[0])
-	{
-		pthread_mutex_unlock(&d->l_able);
-		d->user[0] = edf_first_coder(c, d);
-		if (d->user[0] == c)
-			return ;
-	}
-	pthread_mutex_unlock(&d->l_able);
-	waiting_dongle_available(c, d);
+	print_dgl(c, d->id);
+	return ;
 }
 
 void	strategie_fifo(t_coder *c, t_dongle *d)

@@ -6,11 +6,11 @@
 /*   By: llafforg <llafforg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:16:59 by llafforg          #+#    #+#             */
-/*   Updated: 2026/09/15 19:07:56 by llafforg         ###   ########.fr       */
+/*   Updated: 2026/09/16 15:31:35 by llafforg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "codexion.h"
+#include "../codexion.h"
 
 long	now_ms(void)
 {
@@ -69,7 +69,7 @@ t_dongle	*find_best_dongles_order(t_coder *c)
 		first = c->dongles_next;
 	else if (prev_c->dongles_took > next_c->dongles_took)
 		first = c->dongles_prev;
-	else if (prev_c->t_burnout < next_c->t_burnout)
+	else if (prev_c->t_burnout < next_c->t_burnout && c->datas->scheduler)
 		first = c->dongles_prev;
 	else
 		first = c->dongles_next;
